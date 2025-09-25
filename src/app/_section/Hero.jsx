@@ -1,13 +1,45 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useRef } from 'react'
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const Hero = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      // Intro timeline
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      tl.fromTo(".hero-title", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 })
+        .fromTo(".hero-subtitle", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, "-=0.4")
+        .fromTo(".hero-desc", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, "-=0.35")
+        .fromTo(".hero-cta", { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.1 }, "-=0.3");
+
+      // Floating blobs subtle movement
+      gsap.utils.toArray(".blob").forEach((el, i) => {
+        gsap.to(el, {
+          xPercent: i % 2 === 0 ? 5 : -5,
+          yPercent: i % 2 === 0 ? -5 : 5,
+          rotation: i % 2 === 0 ? 8 : -8,
+          duration: 10 + i * 2,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut"
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+    <section ref={sectionRef} id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="blob absolute -top-40 -right-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div className="blob absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+        <div className="blob absolute top-40 left-40 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
       </div>
 
       <div className="container mx-auto px-6 text-center relative z-10">
@@ -22,28 +54,28 @@ const Hero = () => {
           </div>
 
           {/* Main Content */}
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6">
+          <h1 className="hero-title text-5xl md:text-7xl font-bold text-gray-900 dark:text-white mb-6">
             Hi, I'm{' '}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Parvinder Singh
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-4">
+          <p className="hero-subtitle text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-4">
             Full Stack Developer 
           </p>
           
-          <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="hero-desc text-lg text-gray-500 dark:text-gray-400 mb-8 max-w-2xl mx-auto leading-relaxed">
             I create beautiful, responsive web applications with modern technologies. 
             Passionate about clean code, user experience, and bringing ideas to life.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+            <button className="hero-cta bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
               View My Work
             </button>
-            <button className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300">
+            <button className="hero-cta border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300">
               Download CV
             </button>
           </div>

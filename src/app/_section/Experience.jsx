@@ -1,7 +1,69 @@
 'use client';
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const Experience = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      // Header
+      gsap.from([".exp-title", ".exp-sub"], {
+        y: 24,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".exp-header",
+          start: "top 80%"
+        }
+      });
+
+      // Timeline line grows
+      gsap.from(".exp-line", {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".exp-timeline",
+          start: "top 80%",
+          end: "bottom 20%",
+          scrub: true
+        }
+      });
+
+      // Each item: dot pop and card slide
+      gsap.utils.toArray(".exp-item").forEach((el, i) => {
+        const card = el.querySelector('.exp-card');
+        const dot = el.querySelector('.exp-dot');
+        gsap.from(dot, {
+          scale: 0,
+          duration: 0.4,
+          ease: "back.out(1.7)",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%"
+          }
+        });
+        gsap.from(card, {
+          y: 30,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%"
+          }
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
   const experiences = [
     {
       title: "Senior Frontend Developer",
@@ -58,33 +120,33 @@ const Experience = () => {
   ]
 
   return (
-    <section id="experience" className="py-20 bg-white dark:bg-gray-900">
+    <section ref={sectionRef} id="experience" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="exp-header text-center mb-16">
+            <h2 className="exp-title text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               Work Experience
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="exp-sub text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               My professional journey and the impact I've made
             </p>
           </div>
 
           {/* Timeline */}
-          <div className="relative">
+          <div className="exp-timeline relative">
             {/* Timeline line */}
-            <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-600 to-purple-600"></div>
+            <div className="exp-line absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-0.5 h-full bg-gradient-to-b from-blue-600 to-purple-600"></div>
 
             {experiences.map((exp, index) => (
-              <div key={index} className={`relative mb-12 ${index % 2 === 0 ? 'md:pr-1/2' : 'md:pl-1/2 md:ml-auto'}`}>
+              <div key={index} className={`exp-item relative mb-12 ${index % 2 === 0 ? 'md:pr-1/2' : 'md:pl-1/2 md:ml-auto'}`}>
                 {/* Timeline dot */}
-                <div className="absolute left-2 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full border-4 border-white dark:border-gray-900 shadow-lg"></div>
+                <div className="exp-dot absolute left-2 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full border-4 border-white dark:border-gray-900 shadow-lg"></div>
 
                 {/* Content card */}
                 <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? 'md:mr-8' : 'md:ml-8'}`}>
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                  <div className="exp-card bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
                     {/* Header */}
                     <div className="mb-4">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">

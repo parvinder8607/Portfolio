@@ -1,24 +1,98 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useRef } from 'react'
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const About = () => {
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const ctx = gsap.context(() => {
+      // Header reveal
+      gsap.from([".about-title", ".about-sub"], {
+        y: 24,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".about-header",
+          start: "top 80%"
+        }
+      });
+
+      // Left image and right content
+      gsap.from(".about-image", {
+        x: -40,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".about-grid",
+          start: "top 75%"
+        }
+      });
+      gsap.from(".about-content", {
+        x: 40,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".about-grid",
+          start: "top 75%"
+        }
+      });
+
+      // Stats cards pop
+      gsap.from(".about-stat", {
+        y: 20,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "back.out(1.6)",
+        scrollTrigger: {
+          trigger: ".about-content",
+          start: "top 70%"
+        }
+      });
+
+      // Progress bars grow
+      gsap.utils.toArray(".about-progress-bar").forEach((el) => {
+        gsap.from(el, {
+          scaleX: 0,
+          transformOrigin: "left",
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 80%"
+          }
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="about" className="py-20 bg-white dark:bg-gray-900">
+    <section ref={sectionRef} id="about" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="about-header text-center mb-16">
+            <h2 className="about-title text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
               About Me
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="about-sub text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Passionate developer with a love for creating innovative solutions
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="about-grid grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Image */}
-            <div className="relative">
+            <div className="about-image relative">
               <div className="relative z-10">
                 <div className="w-full max-w-md mx-auto">
                   <div className="aspect-square rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 p-1 shadow-2xl">
@@ -33,7 +107,7 @@ const About = () => {
             </div>
 
             {/* Right Column - Content */}
-            <div className="space-y-6">
+            <div className="about-content space-y-6">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                   Hello! I'm a passionate developer
@@ -51,11 +125,11 @@ const About = () => {
 
               {/* Stats */}
               <div className="grid grid-cols-2 gap-6">
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="about-stat text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">50+</div>
                   <div className="text-gray-600 dark:text-gray-300 text-sm">Projects Completed</div>
                 </div>
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="about-stat text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">3+</div>
                   <div className="text-gray-600 dark:text-gray-300 text-sm">Years Experience</div>
                 </div>
@@ -72,7 +146,7 @@ const About = () => {
                       <span className="text-sm text-gray-500 dark:text-gray-400">90%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full" style={{width: '90%'}}></div>
+                      <div className="about-progress-bar bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full" style={{width: '90%'}}></div>
                     </div>
                   </div>
                   
@@ -82,7 +156,7 @@ const About = () => {
                       <span className="text-sm text-gray-500 dark:text-gray-400">85%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style={{width: '85%'}}></div>
+                      <div className="about-progress-bar bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style={{width: '85%'}}></div>
                     </div>
                   </div>
                   
@@ -92,7 +166,7 @@ const About = () => {
                       <span className="text-sm text-gray-500 dark:text-gray-400">80%</span>
                     </div>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                      <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style={{width: '80%'}}></div>
+                      <div className="about-progress-bar bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style={{width: '80%'}}></div>
                     </div>
                   </div>
                 </div>
